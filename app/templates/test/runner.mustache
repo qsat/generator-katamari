@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TEST</title>
+  <link rel="stylesheet" href="/vendor/mocha/mocha.css">
+  <script type="text/javascript" src="/vendor/mocha/mocha.js"></script>
+  <script type="text/javascript" src="/vendor/expect/expect.js"></script>
+  <script type="text/javascript">mocha.setup("bdd")</script>
+  <script type="text/javascript" src="/testem.js"></script>
+
+  <script type="text/javascript" src="/vendor/requirejs/require.js"></script>
+
+</head>
+<body>
+
+  <div id="mocha"></div>
+
+  <script type="text/javascript">
+    requirejs.config({
+      baseUrl: '/src/js',
+      paths: {
+        jquery: "/vendor/jquery/jquery",
+        underscore: "/vendor/underscore/underscore",
+        backbone: "/vendor/backbone/backbone"
+      },
+      shim: {
+        backbone: {
+          deps: ["underscore", "jquery"],
+          exports: "Backbone"
+        },
+        underscore: {
+          exports: "_"
+        }
+      }
+    });
+
+    var files = [];
+
+    {{#serve_files}}files.push("{{src}}");{{/serve_files}}
+
+    require(files, function(){
+        mocha.run();
+    });
+
+  </script>
+  
+</body>
+</html>

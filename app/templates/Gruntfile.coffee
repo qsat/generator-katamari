@@ -2,18 +2,19 @@
 
 module.exports = (grunt) ->
 
-  grunt.loadNpmTasks 'grunt-contrib-copy'
+  grunt.loadNpmTasks 'grunt-browser-sync'
+  grunt.loadNpmTasks 'grunt-contrib-clean'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-compass'
-  grunt.loadNpmTasks 'grunt-contrib-cssmin'
-  grunt.loadNpmTasks 'grunt-contrib-jshint'
   grunt.loadNpmTasks 'grunt-contrib-concat'
-  grunt.loadNpmTasks 'grunt-contrib-clean'
-  grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-contrib-connect'
-  grunt.loadNpmTasks 'grunt-styleguide'
+  grunt.loadNpmTasks 'grunt-contrib-copy'
+  grunt.loadNpmTasks 'grunt-contrib-imagemin'
+  grunt.loadNpmTasks 'grunt-contrib-jade'
+  grunt.loadNpmTasks 'grunt-contrib-testem'
   grunt.loadNpmTasks 'grunt-este-watch'
-  grunt.loadNpmTasks 'grunt-browserify'
+  grunt.loadNpmTasks 'grunt-requirejs'
+  grunt.loadNpmTasks 'grunt-styleguide'
  
   grunt.initConfig
  
@@ -22,13 +23,30 @@ module.exports = (grunt) ->
 
     esteWatch:
       options:
+        #dirs: ["src/**", "htdocs/**"]
         dirs: ["src/**"]
+        livereload:
+          enabled: false
+          port: 35729
+          extensions: ['js', 'css']
 
       coffee: (filepath) -> 'coffee'
       scss:   (filepath) -> 'compass'
       sass:   (filepath) -> 'compass'
-      css:    (filepath) -> 'styleguide'
-      html:   (filepath) -> 'copy:src'
+
+    browser_sync:
+      dev: 
+        bsFiles: 
+          src : ["htdocs/**/*"]
+        options:
+          watchTask: true
+          ghostMode:
+            clicks: true
+            scroll: true
+            links: true
+            forms: true
+          server:
+            baseDir: "htdocs"
 
     connect:
       server:
@@ -36,6 +54,8 @@ module.exports = (grunt) ->
           port: 8008
           hostname: '0.0.0.0'
           base: 'htdocs'
+          livereload: true
+          open: true
 
       styleguide:
         options:
@@ -60,13 +80,6 @@ module.exports = (grunt) ->
         cwd: 'bower_components/' # srcの固定。destは固定されない
         src: ['*/*min.js', '*/*-min.js', '*/*.map']
         dest: 'htdocs/shared/scripts/lib/'
-        filter: 'isFile'
-      src:
-        expand: true
-        flatten: false
-        cwd: 'src'
-        src: ['**/*', '!**/*.coffee', '!**/*.scss']
-        dest: 'htdocs/'
 
     coffee:
       compile:
@@ -77,25 +90,15 @@ module.exports = (grunt) ->
         dest: 'htdocs/'
         ext: '.js'
 
-    jshint:
-      htdocs: [
-        'htdocs/**/*.js',
-        '!htdocs/**/*.min.js'
-      ]
+    imagemin:
+      compile:
+        expand: true
+        dest: '../images'
+        src: [ "**/*.png", "**/*.jpg", "**/*.gif" ]
+        cwd: "src/images/"
+        options:
+          optimazationLevel: 3
 
-    uglify:
-      options:
-        mangle: true # true にすると難読化がかかる。false だと関数や変数の名前はそのまま
-      shared:
-        options: # sourcemap : https://github.com/gruntjs/grunt-contrib-uglify/issues/71
-          banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - */' 
-        files:
-          'htdocs/shared/js/script.min.js': [
-            'htdocs/shared/js/libs/jquery.js'
-            'htdocs/shared/js/observer.js'
-          ]
-
-    # https://github.com/gruntjs/grunt-contrib-compass
     compass:
       src:
         options:
@@ -106,51 +109,35 @@ module.exports = (grunt) ->
           cssDir: 'htdocs/'
           importPath: 'config/scss'
 
-    cssmin:
-      src:
-        expand: true
-        flatten: false
-        cwd: 'htodcs/'
-        src: ['**/*.css', '!**/*.min.css']
-        dest: 'htodcs/'
-        ext: '.css'
-    
-    browserify:
-      dist:
-        src: 'htdocs/shared/scripts/app.js'
-        dest: 'htdocs/shared/scripts/build.js'
+    testem:
+      set1:
+        src:[
+          'test/**/*.js'
+        ]
         options:
-          shim:
-            jquery:
-              path: 'htdocs/shared/scripts/lib/jquery.min.js'
-              exports: '$'
-            underscore:
-              path: 'htdocs/shared/scripts/lib/underscore-min.js'
-              exports: '_'
-            backbone:
-              path: 'htdocs/shared/scripts/lib/backbone-min.js'
-              exports: 'Backbone'
+          parallel: 4
+          framework: 'mocha'
+          launch_in_ci: ['Safari', 'Chrome', 'Firefox', 'PhantomJS']
+          test_page: 'test/runner.mustache'
+          src_files: ['test/js/**/*.js']
+          routes:
+            "/test"  : "../test"
+            "/vendor": "../bower_components"
+            "/src"   : "../htdocs/shared/scripts"
 
-    # concat:
-    #   dist:
-    #     files:
-    #       'htodcs/shared/css/style.css': [
-    #         'htodcs/shared/css/all.css',
-    #         'htodcs/shared/css/module.css',
-    #         'htodcs/shared/css/theme-responsive.css',
-    #         'htodcs/shared/css/theme.css'
-    #       ]
+    requirejs:
+      compile:
+        options:
+          almond: true
+          baseUrl: 'htdocs/shared/scripts/'
+          mainConfigFile: 'htdocs/shared/scripts/bootstrap.js'
+          out: 'htdocs/shared/scripts/application.js'
+          include: ['bootstrap_build']
+          optimize: "uglify2"
+          generateSourceMaps: true
+          preserveLicenseComments: false
+          useSourceUrl:true
 
-    # clean:
-    #   dist: [
-    #         'htodcs/shared/css/all.css',
-    #         'htodcs/shared/css/module.css',
-    #         'htodcs/shared/css/theme-responsive.css',
-    #         'htodcs/shared/css/theme.css'
-    #       ]
 
-  grunt.registerTask 'init', ['copy:bower']
-  grunt.registerTask 'default', ['esteWatch']
-  grunt.registerTask 'lint', ['jshint']
-  grunt.registerTask 'build', ['uglify', 'cssmin']
-  grunt.registerTask 'test', ['browserify']
+  grunt.registerTask 'default', ['copy:bower', 'connect', 'esteWatch']
+  grunt.registerTask 'sync', ['browser_sync', 'esteWatch']

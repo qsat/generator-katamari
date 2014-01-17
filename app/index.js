@@ -23,25 +23,31 @@ KatamariGenerator.prototype.askFor = function askFor() {
   console.log(this.yeoman);
 
   var prompts = [{
-    type: 'confirm',
-    name: 'someOption',
-    message: 'Would you like to enable this option?',
-    default: true
+    name: 'projectName',
+    message: "Please enter your project's name.",
   }];
 
   this.prompt(prompts, function (props) {
-    this.someOption = props.someOption;
+    this.projectName = props.projectName;
 
     cb();
   }.bind(this));
 };
 
 KatamariGenerator.prototype.app = function app() {
-  this.mkdir('app');
-  this.mkdir('app/templates');
+  this.mkdir('htdocs');
+  this.mkdir('src');
+  this.mkdir('src/shared');
+  this.mkdir('src/shared/styles');
+  this.mkdir('src/shared/scripts');
+  this.mkdir('src/shared/scripts/lib');
 
-  this.copy('_package.json', 'package.json');
-  this.copy('_bower.json', 'bower.json');
+  this.template('Gruntfile.coffee', 'Gruntfile.coffee');
+
+  this.template('_package.json', 'package.json');
+  this.template('_bower.json', 'bower.json');
+  this.template('htdocs/index.html', 'htdocs/index.html');
+  this.copy('bowerrc', '.bowerrc');
 };
 
 KatamariGenerator.prototype.projectfiles = function projectfiles() {
