@@ -93,9 +93,9 @@ module.exports = (grunt) ->
     imagemin:
       compile:
         expand: true
-        dest: '../images'
+        dest: 'htdocs'
         src: [ "**/*.png", "**/*.jpg", "**/*.gif" ]
-        cwd: "src/images/"
+        cwd: "src"
         options:
           optimazationLevel: 3
 
@@ -107,7 +107,6 @@ module.exports = (grunt) ->
           debugInfo: false
           sassDir: 'src/'
           cssDir: 'htdocs/'
-          importPath: 'config/scss'
 
     testem:
       set1:
@@ -117,13 +116,13 @@ module.exports = (grunt) ->
         options:
           parallel: 4
           framework: 'mocha'
-          launch_in_ci: ['Safari', 'Chrome', 'Firefox', 'PhantomJS']
+          #launch_in_ci: ['Safari', 'Chrome', 'Firefox', 'PhantomJS']
+          launch_in_ci: ['Safari']
           test_page: 'test/runner.mustache'
           src_files: ['test/js/**/*.js']
           routes:
-            "/test"  : "../test"
-            "/vendor": "../bower_components"
-            "/src"   : "../htdocs/shared/scripts"
+            "/vendor": "bower_components"
+            "/src"   : "htdocs/shared/scripts"
 
     requirejs:
       compile:

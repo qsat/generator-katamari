@@ -47,6 +47,10 @@ KatamariGenerator.prototype.app = function app() {
   this.template('_package.json', 'package.json');
   this.template('_bower.json', 'bower.json');
   this.template('htdocs/index.html', 'htdocs/index.html');
+  this.copy('src/shared/styles/style.scss');
+  this.copy('src/shared/styles/_mixin.scss');
+  this.copy('src/shared/styles/_reset.scss');
+  this.copy('src/shared/styles/_utils.sass');
   this.copy('bowerrc', '.bowerrc');
 };
 
