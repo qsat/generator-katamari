@@ -96,15 +96,14 @@ module.exports = (grunt) ->
     copy:
       bower:
         expand: true
-        flatten: true
-        cwd: 'bower_components/' # srcの固定。destは固定されない
-        src: ['*/*min.js', '*/*-min.js', '*/*.map']
+        cwd: 'bower_components/'
+        src: ['*/*.js', '*/*min.js', '*/*-min.js', '*/*.map']
         dest: 'htdocs/shared/scripts/lib/'
 
     coffee:
       compile:
         expand: true
-        flatten: false #src内のディレクトリをキープして出力
+        flatten: false
         cwd: 'src'
         src: '**/*.coffee'
         dest: 'htdocs/'
