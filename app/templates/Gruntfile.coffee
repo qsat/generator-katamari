@@ -2,6 +2,7 @@
 
 module.exports = (grunt) ->
 
+  grunt.loadNpmTasks 'grunt-autoprefixer'
   grunt.loadNpmTasks 'grunt-browser-sync'
   grunt.loadNpmTasks 'grunt-contrib-clean'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
@@ -12,8 +13,10 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-imagemin'
   grunt.loadNpmTasks 'grunt-contrib-jade'
   grunt.loadNpmTasks 'grunt-contrib-testem'
+  grunt.loadNpmTasks 'grunt-copy-changed'
   grunt.loadNpmTasks 'grunt-este-watch'
   grunt.loadNpmTasks 'grunt-requirejs'
+  grunt.loadNpmTasks 'grunt-ftp-deploy'
   grunt.loadNpmTasks 'grunt-styleguide'
  
   grunt.initConfig
@@ -21,9 +24,25 @@ module.exports = (grunt) ->
     pkg:
       grunt.file.readJSON 'package.json'
 
+    copyChanged:
+      options:
+        watchTask: true
+        checksum: true
+        dirs: ['htdocs/**/']
+
+    'ftp-deploy':
+      dev:
+        auth:
+          host: "example.com"
+          port: 21
+          authKey: "key1" ## SEE .ftppass
+        src: "_modified/htdocs"
+        dest: "/test_dir"
+        server_sep: '/'
+        exclusions: ["_modified/htdocs/**/.DS_Store"]
+
     esteWatch:
       options:
-        #dirs: ["src/**", "htdocs/**"]
         dirs: ["src/**"]
         livereload:
           enabled: false
@@ -33,6 +52,7 @@ module.exports = (grunt) ->
       coffee: (filepath) -> 'coffee'
       scss:   (filepath) -> 'compass'
       sass:   (filepath) -> 'compass'
+      jade:   (filepath) -> 'jade'
 
     browser_sync:
       dev: 
@@ -99,6 +119,12 @@ module.exports = (grunt) ->
         options:
           optimazationLevel: 3
 
+    autoprefixer:
+      options:
+        browsers: ['ios >= 5', 'android >= 2.3', 'ie 8', 'ie 9', 'firefox 17', 'opera 12.1']
+      dist:
+        src: 'htdocs/shared/styles/**/*'
+
     compass:
       src:
         options:
@@ -138,5 +164,5 @@ module.exports = (grunt) ->
           useSourceUrl:true
 
 
-  grunt.registerTask 'default', ['copy:bower', 'connect', 'esteWatch']
-  grunt.registerTask 'sync', ['browser_sync', 'esteWatch']
+  grunt.registerTask 'default', ['copy:bower', 'browser_sync', 'copyChanged', 'esteWatch']
+  grunt.registerTask 'dev_deploy', ['ftp-deploy:dev']

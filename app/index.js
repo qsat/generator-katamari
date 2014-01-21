@@ -52,6 +52,8 @@ KatamariGenerator.prototype.app = function app() {
   this.copy('src/shared/styles/_reset.scss');
   this.copy('src/shared/styles/_utils.sass');
   this.copy('bowerrc', '.bowerrc');
+  this.copy('gitignore', '.gitignore');
+  this.copy('ftppass', '.ftppass');
 };
 
 KatamariGenerator.prototype.projectfiles = function projectfiles() {

@@ -10,6 +10,7 @@
   "license": "BSD-2-Clause",
   "devDependencies": {
     "grunt": "~0.4.2",
+    "grunt-autoprefixer": "~0.6.4",
     "grunt-browser-sync": "~0.4.8",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-coffee": "~0.7.0",
@@ -17,12 +18,14 @@
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-connect": "~0.5.0",
     "grunt-contrib-copy": "~0.4.1",
-    "grunt-contrib-csslint": "~0.1.2",
     "grunt-contrib-imagemin": "~0.3.0",
     "grunt-contrib-jade": "~0.8.0",
     "grunt-contrib-testem": "~0.5.12",
+    "grunt-copy-changed": "~0.1.2",
     "grunt-este-watch": "~0.1.13",
     "grunt-requirejs": "~0.4",
+    "grunt-ftp-deploy": "0.1.1",
+    "grunt-sftp-deploy": "0.0.11",
     "grunt-styleguide": "~0.2.12"
   }
 }
