@@ -173,6 +173,5 @@ module.exports = (grunt) ->
           preserveLicenseComments: false
           useSourceUrl:true
 
-
   grunt.registerTask 'default', ['copy:bower', 'browser_sync', 'copyChanged', 'esteWatch']
-  grunt.registerTask 'dev_deploy', ['copy', 'ftp-deploy:dev', 'clean']
+  grunt.registerTask 'dev_deploy', ['ftp-deploy:dev', 'copy:preupload', 'clean']
