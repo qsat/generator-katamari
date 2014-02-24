@@ -26,6 +26,7 @@ module.exports = (grunt) ->
 
     copyChanged:
       options:
+        dest: "__modified"
         watchTask: true
         checksum: true
         dirs: ['htdocs/**/']
@@ -36,10 +37,10 @@ module.exports = (grunt) ->
           host: "example.com"
           port: 21
           authKey: "key1" ## SEE .ftppass
-        src: "_modified/htdocs"
+        src: "__modified/htdocs"
         dest: "/test_dir"
         server_sep: '/'
-        exclusions: ["_modified/htdocs/**/.DS_Store"]
+        exclusions: ["__modified/htdocs/**/.DS_Store"]
 
     esteWatch:
       options:
@@ -65,6 +66,9 @@ module.exports = (grunt) ->
             scroll: true
             links: true
             forms: true
+#          proxy:
+#            host: "localhost"
+#            port: 8888
           server:
             baseDir: "htdocs"
 
@@ -99,6 +103,13 @@ module.exports = (grunt) ->
         cwd: 'bower_components/'
         src: ['*/*.js', '*/*min.js', '*/*-min.js', '*/*.map']
         dest: 'htdocs/shared/scripts/lib/'
+      preupload:
+        expand:true
+        cwd: '__modified'
+        src: ['**/*']
+        dest: do -> "__modified_"+new Date().getTime()
+
+    clean: ['__modified']
 
     coffee:
       compile:
@@ -164,4 +175,4 @@ module.exports = (grunt) ->
 
 
   grunt.registerTask 'default', ['copy:bower', 'browser_sync', 'copyChanged', 'esteWatch']
-  grunt.registerTask 'dev_deploy', ['ftp-deploy:dev']
+  grunt.registerTask 'dev_deploy', ['copy', 'ftp-deploy:dev', 'clean']
