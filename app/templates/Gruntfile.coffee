@@ -111,6 +111,17 @@ module.exports = (grunt) ->
 
     clean: ['__modified']
 
+    jade:
+      compile:
+        expand: true
+        cwd: 'src'
+        src: ['**/*.jade']
+        dest: 'htdocs/'
+        ext: ".html"
+        options:
+          pretty: true
+          basedir: 'src/'
+
     coffee:
       compile:
         expand: true
