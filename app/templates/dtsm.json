@@ -1,0 +1,47 @@
+{
+  "repos": [
+    {
+      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+      "ref": "master"
+    }
+  ],
+  "path": "typings",
+  "bundle": "typings/bundle.d.ts",
+  "link": {
+    "npm": {
+      "include": true
+    }
+  },
+  "dependencies": {
+    "react/react.d.ts": {
+      "ref": "fb2b3b1e068c9ff7d8f9b0851c08d37d96c95c38"
+    },
+    "redux/redux.d.ts": {
+      "ref": "fb2b3b1e068c9ff7d8f9b0851c08d37d96c95c38"
+    },
+    "jquery/jquery.d.ts": {
+      "ref": "fb2b3b1e068c9ff7d8f9b0851c08d37d96c95c38"
+    },
+    "threejs/three.d.ts": {
+      "ref": "fb2b3b1e068c9ff7d8f9b0851c08d37d96c95c38"
+    },
+    "react-redux/react-redux.d.ts": {
+      "ref": "40c60850ad6c8175a62d5ab48c4e016ea5b3dffe"
+    },
+    "redux-thunk/redux-thunk.d.ts": {
+      "ref": "484496f5ef013ad00a768d42c1eabdffa3202fef"
+    },
+    "redux-logger/redux-logger.d.ts": {
+      "ref": "484496f5ef013ad00a768d42c1eabdffa3202fef"
+    },
+    "react/react-addons-css-transition-group.d.ts": {
+      "ref": "a6ff9f6e195a334afd89e4b721d05e9520eee4c0"
+    },
+    "lodash/lodash.d.ts": {
+      "ref": "dab0fb7cb7dc9bd46a4282508f77241fbd42cbbb"
+    },
+    "react/react-dom.d.ts": {
+      "ref": "dab0fb7cb7dc9bd46a4282508f77241fbd42cbbb"
+    }
+  }
+}

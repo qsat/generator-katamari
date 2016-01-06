@@ -2,61 +2,75 @@
 var util = require('util');
 var path = require('path');
 var yeoman = require('yeoman-generator');
+var mkdirp = require('mkdirp');
 
 
-var KatamariGenerator = module.exports = function KatamariGenerator(args, options, config) {
-  yeoman.generators.Base.apply(this, arguments);
+var KatamariGenerator = yeoman.Base.extend({
+  init: function () {
+    this.pkg = require('../package.json');
 
-  this.on('end', function () {
-    this.installDependencies({ skipInstall: options['skip-install'] });
-  });
+    this.on('end', () => {
 
-  this.pkg = JSON.parse(this.readFileAsString(path.join(__dirname, '../package.json')));
-};
+      if (!this.options['skip-install']) {
 
-util.inherits(KatamariGenerator, yeoman.generators.Base);
+        this.log("exec dtsm install...");
+        this.spawnCommandSync("dtsm", ["install"]);
+        this.log("exec npm install...");
+        this.spawnCommandSync("npm", ["install"]);
+        // this.installDependencies();
 
-KatamariGenerator.prototype.askFor = function askFor() {
-  var cb = this.async();
+      }
 
-  // have Yeoman greet the user.
-  console.log(this.yeoman);
+      this.log("\n To run server, execute 'npm start'");
 
-  var prompts = [{
-    name: 'projectName',
-    message: "Please enter your project's name.",
-  }];
+    });
+  },
 
-  this.prompt(prompts, function (props) {
-    this.projectName = props.projectName;
+  askFor: function () {
+    var done = this.async();
 
-    cb();
-  }.bind(this));
-};
+    // replace it with a short and sweet description of your generator
+    this.log('You\'re using the Katamari generator.');
 
-KatamariGenerator.prototype.app = function app() {
-  this.mkdir('htdocs');
-  this.mkdir('src');
-  this.mkdir('src/shared');
-  this.mkdir('src/shared/styles');
-  this.mkdir('src/shared/scripts');
-  this.mkdir('src/shared/scripts/lib');
+    var prompts = [{
+      name: 'projectName',
+      message: "Please enter your project's name.",
+    }];
 
-  this.template('Gruntfile.coffee', 'Gruntfile.coffee');
+    this.prompt(prompts, function (props) {
+      this.projectName = props.projectName;
 
-  this.template('_package.json', 'package.json');
-  this.template('_bower.json', 'bower.json');
-  this.template('htdocs/index.html', 'htdocs/index.html');
-  this.copy('src/shared/styles/style.scss');
-  this.copy('src/shared/styles/_mixin.scss');
-  this.copy('src/shared/styles/_reset.scss');
-  this.copy('src/shared/styles/_utils.sass');
-  this.copy('bowerrc', '.bowerrc');
-  this.copy('gitignore', '.gitignore');
-  this.copy('ftppass', '.ftppass');
-};
+      done();
+    }.bind(this));
+  },
 
-KatamariGenerator.prototype.projectfiles = function projectfiles() {
-  this.copy('editorconfig', '.editorconfig');
-  this.copy('jshintrc', '.jshintrc');
-};
+  app: function () {
+    mkdirp('dist');
+    mkdirp('src');
+    mkdirp('src/images');
+
+    this.template('package.json', 'package.json');
+    this.template('gulpfile.coffee', 'gulpfile.coffee');
+    this.template('tsconfig.json', 'tsconfig.json');
+    this.template('dtsm.json', 'dtsm.json');
+
+    this.template('src/index.jade', 'src/index.jade');
+
+    this.copy('src/index.tsx', 'src/index.tsx');
+
+    this.copy('src/images/sprite.styl', 'src/images/sprite.styl');
+    this.copy('src/images/sprite.png', 'src/images/sprite.png');
+    this.copy('src/index.styl', 'src/index.styl');
+
+    this.copy('src/_import.d.ts', 'src/_import.d.ts');
+    this.copy('src/_import.js', 'src/_import.js');
+
+    this.copy('gitignore', '.gitignore');
+  },
+
+  projectfiles: function () {
+    this.copy('editorconfig', '.editorconfig');
+  }
+});
+
+module.exports = KatamariGenerator;
